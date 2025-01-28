@@ -33,7 +33,7 @@ Once the container is running, follow these steps to create a database named `pr
    ```
 
 ### 4. Update the `application.properties` File
-If you wish to use a different password, database name, or other PostgreSQL settings, ensure you update the corresponding values in the `application.properties` file of the backend application. Look for lines such as:
+If you wish to use a different password, database name, or other PostgreSQL settings, ensure you update the corresponding values in the `application.properties` file of the backend application located at `src/main/resources/application.properties`. Look for lines such as:
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/practice
