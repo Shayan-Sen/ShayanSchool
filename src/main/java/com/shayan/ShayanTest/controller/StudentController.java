@@ -42,13 +42,13 @@ public class StudentController {
             CollectionModel<EntityModel<Student>> studentModel = CollectionModel.of(students,
                     linkTo(methodOn(StudentController.class).getAllStudents()).withSelfRel());
 
-            response.setMessage("Succesfully extracted all student records");
+            response.setMessage("Successfully extracted all student records");
             response.setData(studentModel);
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (Exception e) {
-            response.setMessage(e.getMessage());
+            response.setMessage("An error occurred while retrieving students: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
@@ -57,15 +57,15 @@ public class StudentController {
     public ResponseEntity<ApiResponse<EntityModel<Student>>> getStudentById(@PathVariable UUID id) {
         ApiResponse<EntityModel<Student>> response = new ApiResponse<>();
         try {
-            Student student = repository.findById(id).orElseThrow(() -> new RuntimeException("Not Found"));
+            Student student = repository.findById(id).orElseThrow(() -> new RuntimeException("Student not found with ID: " + id));
             EntityModel<Student> studentModel = assembler.toModel(student);
 
-            response.setMessage("Succesful got student with id:" + id);
+            response.setMessage("Successfully retrieved student with ID: " + id);
             response.setData(studentModel);
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
-            response.setMessage(e.getMessage());
+            response.setMessage("An error occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
@@ -75,14 +75,14 @@ public class StudentController {
         ApiResponse<EntityModel<Student>> response = new ApiResponse<>();
         try {
             repository.save(student);
-            EntityModel<Student> studenModel = assembler.toModel(student);
+            EntityModel<Student> studentModel = assembler.toModel(student);
 
             response.setMessage("Successfully created new student");
-            response.setData(studenModel);
+            response.setData(studentModel);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
-            response.setMessage(e.getMessage());
+            response.setMessage("Failed to create student. Please check the input data: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
@@ -93,7 +93,7 @@ public class StudentController {
         ApiResponse<EntityModel<Student>> response = new ApiResponse<>();
         try {
             Student existingStudent = repository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Student does not exist!"));
+                    .orElseThrow(() -> new RuntimeException("Cannot update. Student not found with ID: " + id));
             existingStudent.setName(student.getName());
             existingStudent.setRollNo(student.getRollNo());
             existingStudent.setRegistrationNo(student.getRegistrationNo());
@@ -105,7 +105,7 @@ public class StudentController {
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
         } catch (Exception e) {
-            response.setMessage(e.getMessage());
+            response.setMessage("An error occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
@@ -116,7 +116,7 @@ public class StudentController {
             repository.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found with id:" + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cannot delete. Student not found with ID: " + id);
         }
     }
 }
