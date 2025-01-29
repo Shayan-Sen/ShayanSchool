@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,12 +53,11 @@ public class StudentController {
         }
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<EntityModel<Student>>> getStudentById(@PathVariable UUID id){
+    public ResponseEntity<ApiResponse<EntityModel<Student>>> getStudentById(@PathVariable UUID id) {
         ApiResponse<EntityModel<Student>> response = new ApiResponse<>();
         try {
-            Student student = repository.findById(id).orElseThrow(()-> new RuntimeException("Not Found"));
+            Student student = repository.findById(id).orElseThrow(() -> new RuntimeException("Not Found"));
             EntityModel<Student> studentModel = assembler.toModel(student);
 
             response.setMessage("Succesful got student with id:" + id);
@@ -71,7 +71,7 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<EntityModel<Student>>> createStudent(@RequestBody Student student){
+    public ResponseEntity<ApiResponse<EntityModel<Student>>> createStudent(@RequestBody Student student) {
         ApiResponse<EntityModel<Student>> response = new ApiResponse<>();
         try {
             repository.save(student);
@@ -87,8 +87,31 @@ public class StudentController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<EntityModel<Student>>> updateStudent(@RequestBody Student student,
+            @PathVariable UUID id) {
+        ApiResponse<EntityModel<Student>> response = new ApiResponse<>();
+        try {
+            Student existingStudent = repository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Student does not exist!"));
+            existingStudent.setName(student.getName());
+            existingStudent.setRollNo(student.getRollNo());
+            existingStudent.setRegistrationNo(student.getRegistrationNo());
+            existingStudent.setCgpa(student.getCgpa());
+
+            EntityModel<Student> studentModel = assembler.toModel(existingStudent);
+            response.setData(studentModel);
+            response.setMessage("Student updated successfully!");
+
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+        } catch (Exception e) {
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteStudent(@PathVariable UUID id){
+    public ResponseEntity<?> deleteStudent(@PathVariable UUID id) {
         try {
             repository.deleteById(id);
             return ResponseEntity.noContent().build();
