@@ -1,6 +1,5 @@
 package com.shayan.ShayanSchool.controller;
 
-import org.springframework.hateoas.RepresentationModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiResponse<T> extends RepresentationModel<ApiResponse<T>>{
-    private T data;
+public class ApiResponse{
+    private Object data;
     private String message;
 }

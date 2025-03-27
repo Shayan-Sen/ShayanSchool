@@ -1,13 +1,8 @@
 package com.shayan.ShayanSchool.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,20 +25,16 @@ import lombok.RequiredArgsConstructor;
 public class StudentController {
 
     private final StudentRepository repository;
-    private final StudentAssembler assembler;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<CollectionModel<EntityModel<Student>>>> getAllStudents() {
-        ApiResponse<CollectionModel<EntityModel<Student>>> response = new ApiResponse<>();
+    public ResponseEntity<ApiResponse> getAllStudents() {
+        ApiResponse response = new ApiResponse();
         try {
-            List<EntityModel<Student>> students = repository.findAll().stream().map(assembler::toModel)
-                    .collect(Collectors.toList());
+            List<Student> students = repository.findAll();
 
-            CollectionModel<EntityModel<Student>> studentModel = CollectionModel.of(students,
-                    linkTo(methodOn(StudentController.class).getAllStudents()).withSelfRel());
 
             response.setMessage("Successfully extracted all student records");
-            response.setData(studentModel);
+            response.setData(students);
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -54,14 +45,13 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<EntityModel<Student>>> getStudentById(@PathVariable UUID id) {
-        ApiResponse<EntityModel<Student>> response = new ApiResponse<>();
+    public ResponseEntity<ApiResponse> getStudentById(@PathVariable String id) {
+        ApiResponse response = new ApiResponse();
         try {
             Student student = repository.findById(id).orElseThrow(() -> new RuntimeException("Student not found with ID: " + id));
-            EntityModel<Student> studentModel = assembler.toModel(student);
 
             response.setMessage("Successfully retrieved student with ID: " + id);
-            response.setData(studentModel);
+            response.setData(student);
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -71,14 +61,13 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<EntityModel<Student>>> createStudent(@RequestBody Student student) {
-        ApiResponse<EntityModel<Student>> response = new ApiResponse<>();
+    public ResponseEntity<ApiResponse> createStudent(@RequestBody Student student) {
+        ApiResponse response = new ApiResponse();
         try {
             repository.save(student);
-            EntityModel<Student> studentModel = assembler.toModel(student);
 
             response.setMessage("Successfully created new student");
-            response.setData(studentModel);
+            response.setData(student);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
@@ -88,9 +77,9 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<EntityModel<Student>>> updateStudent(@RequestBody Student student,
-            @PathVariable UUID id) {
-        ApiResponse<EntityModel<Student>> response = new ApiResponse<>();
+    public ResponseEntity<ApiResponse> updateStudent(@RequestBody Student student,
+            @PathVariable String id) {
+        ApiResponse response = new ApiResponse();
         try {
             Student existingStudent = repository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Cannot update. Student not found with ID: " + id));
@@ -99,8 +88,7 @@ public class StudentController {
             existingStudent.setRegistrationNo(student.getRegistrationNo());
             existingStudent.setCgpa(student.getCgpa());
 
-            EntityModel<Student> studentModel = assembler.toModel(existingStudent);
-            response.setData(studentModel);
+            response.setData(student);
             response.setMessage("Student updated successfully!");
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
@@ -111,7 +99,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteStudent(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteStudent(@PathVariable String id) {
         try {
             repository.deleteById(id);
             return ResponseEntity.noContent().build();

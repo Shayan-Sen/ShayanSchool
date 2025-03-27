@@ -2,7 +2,6 @@ package com.shayan.ShayanSchool.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
@@ -10,20 +9,19 @@ import org.hibernate.annotations.UuidGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Student {
 
     @Id
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    @Column(updatable = false, nullable = false, columnDefinition = "UUID DEFAULT uuid_generate_v4()")
-    private UUID id;
+    private String id;
 
     @Column(nullable = false)
     private String name;
@@ -37,8 +35,11 @@ public class Student {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal cgpa;
 
+    @Column(nullable = true)
+    private ClassRoom classRoom;
+
     @CreationTimestamp
-    @Column(nullable = false, updatable = false, name = "created_at", columnDefinition = "TIMESTAMP DEFAULT now()")
+    @Column(nullable = false, updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
     public Student(String name, Long rollNo, Long registrationNo, BigDecimal cgpa) {
