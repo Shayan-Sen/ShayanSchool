@@ -17,7 +17,7 @@ public class StaffInitConfig {
             if (staffRepository.count() == 0) {
                 Staff defaultAdmin = new Staff();
                 defaultAdmin.setStaffname("admin");
-                defaultAdmin.setStaffpass("admin123");
+                defaultAdmin.setStaffpass("admin");
                 defaultAdmin.setDesignation("Principal");
                 
                 staffRepository.save(defaultAdmin);

@@ -1,0 +1,27 @@
+# spring.application.name=ShayanTest
+
+
+# # PostgreSQL connection
+# spring.datasource.url=jdbc:postgresql://localhost:5432/practice
+# spring.datasource.username=postgres
+# spring.datasource.password=shayan
+
+# # Hibernate/JPA settings
+# spring.jpa.hibernate.ddl-auto=update
+# spring.jpa.show-sql=true
+# spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+spring:
+  application:
+    name: ShayanSchool
+  datasource:
+    url: postgresql://localhost:5432/practice
+    username: postgres
+    password: shayan
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
