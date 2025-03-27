@@ -1,4 +1,4 @@
-package com.shayan.ShayanSchool.model;
+package com.shayan.ShayanSchool.model.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

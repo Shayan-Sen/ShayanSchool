@@ -1,4 +1,4 @@
-package com.shayan.ShayanSchool.model;
+package com.shayan.ShayanSchool.model.entity;
 
 import org.hibernate.annotations.UuidGenerator;
 

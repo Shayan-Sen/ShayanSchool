@@ -1,4 +1,4 @@
-package com.shayan.ShayanSchool.model;
+package com.shayan.ShayanSchool.model.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

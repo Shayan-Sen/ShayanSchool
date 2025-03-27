@@ -1,4 +1,4 @@
-package com.shayan.ShayanSchool.model;
+package com.shayan.ShayanSchool.model.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -54,7 +54,6 @@ public class ClassRoom {
     @Column(nullable = false, updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
-    // Helper method to add a teacher
     public void addTeacher(Teacher teacher) {
         if (!teachers.contains(teacher)) {
             teachers.add(teacher);
@@ -62,7 +61,6 @@ public class ClassRoom {
         }
     }
 
-    // Helper method to remove a teacher
     public void removeTeacher(Teacher teacher) {
         teachers.remove(teacher);
         teacher.getClassRooms().remove(this);
