@@ -1,9 +1,11 @@
+
+
 package com.shayan.ShayanSchool.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
@@ -16,41 +18,40 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class Student {
-
+public class Notice {
+    
     @Id
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private String id;
 
     @Column(nullable = false)
-    private String name;
+    private String title;
 
-    @Column(nullable = false, unique = true, name = "roll_no")
-    private Long rollNo;
-
-    @Column(nullable = false, unique = true, name = "registration_no")
-    private Long registrationNo;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal cgpa;
+    private String content;
 
     @ManyToOne
-    @JoinColumn(name = "classroom_id")
+    @JoinColumn(name = "classroom_id", nullable = false)
     @ToString.Exclude
     private ClassRoom classRoom;
 
+    @Column(nullable = true)
+    private LocalDateTime expirationTime;
+
     @CreationTimestamp
-    @Column(nullable = false, updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
-    public Student(String name, Long rollNo, Long registrationNo, BigDecimal cgpa) {
-        this.name = name;
-        this.rollNo = rollNo;
-        this.registrationNo = registrationNo;
-        this.cgpa = cgpa;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    public boolean isExpired() {
+        return expirationTime != null && LocalDateTime.now().isAfter(expirationTime);
+    }
+
+    public void setExpirationDuration(long hours) {
+        this.expirationTime = LocalDateTime.now().plusHours(hours);
     }
 }

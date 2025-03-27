@@ -1,13 +1,21 @@
 package com.shayan.ShayanSchool.model;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
@@ -20,10 +28,28 @@ public class Teacher {
     private String id;
 
     @Column(nullable = false)
-    private String name;
+    private String teachername;
 
     @Column(nullable = false)
-    private String password;
+    private String teacherpass;
 
-    private ClassRoom classRoom;
+    @ManyToMany(mappedBy = "teachers", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ToString.Exclude
+    private List<ClassRoom> classRooms = new ArrayList<>();
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
+
+    public void addClassRoom(ClassRoom classRoom) {
+        if (!classRooms.contains(classRoom)) {
+            classRooms.add(classRoom);
+            classRoom.getTeachers().add(this);
+        }
+    }
+
+    public void removeClassRoom(ClassRoom classRoom) {
+        classRooms.remove(classRoom);
+        classRoom.getTeachers().remove(this);
+    }
 }
