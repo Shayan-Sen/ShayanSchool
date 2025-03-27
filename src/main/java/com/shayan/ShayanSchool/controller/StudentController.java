@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shayan.ShayanSchool.model.entity.Student;
 import com.shayan.ShayanSchool.model.repository.StudentRepository;
+import com.shayan.ShayanSchool.model.schema.Student;
 
 import lombok.RequiredArgsConstructor;
 
