@@ -1,12 +1,13 @@
-package com.shayan.ShayanTest.controller;
+package com.shayan.ShayanSchool.controller;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-import com.shayan.ShayanTest.model.Student;
+import com.shayan.ShayanSchool.model.Student;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @Component
 public class StudentAssembler implements RepresentationModelAssembler<Student,EntityModel<Student>>{

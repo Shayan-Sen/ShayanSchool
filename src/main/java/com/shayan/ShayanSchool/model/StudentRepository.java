@@ -1,4 +1,4 @@
-package com.shayan.ShayanTest.model;
+package com.shayan.ShayanSchool.model;
 
 import java.util.UUID;
 

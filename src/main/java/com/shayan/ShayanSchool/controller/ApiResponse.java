@@ -1,4 +1,4 @@
-package com.shayan.ShayanTest.controller;
+package com.shayan.ShayanSchool.controller;
 
 import org.springframework.hateoas.RepresentationModel;
 

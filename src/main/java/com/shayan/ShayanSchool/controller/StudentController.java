@@ -1,4 +1,4 @@
-package com.shayan.ShayanTest.controller;
+package com.shayan.ShayanSchool.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shayan.ShayanTest.model.Student;
-import com.shayan.ShayanTest.model.StudentRepository;
+import com.shayan.ShayanSchool.model.Student;
+import com.shayan.ShayanSchool.model.StudentRepository;
 
 import lombok.RequiredArgsConstructor;
 
