@@ -3,10 +3,11 @@
 package com.shayan.ShayanSchool.model.schema;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.UuidGenerator;
+// import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,8 +26,8 @@ import lombok.ToString;
 public class Notice {
     
     @Id
-    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    private String id;
+    // @UuidGenerator(style = UuidGenerator.Style.RANDOM)
+    private String id = generateCustomUuid();
 
     @Column(nullable = false)
     private String title;
@@ -53,5 +54,9 @@ public class Notice {
 
     public void setExpirationDuration(long hours) {
         this.expirationTime = LocalDateTime.now().plusHours(hours);
+    }
+
+    private String generateCustomUuid(){
+        return "N-" + UUID.randomUUID().toString();
     }
 }

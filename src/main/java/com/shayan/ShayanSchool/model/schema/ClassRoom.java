@@ -3,9 +3,10 @@ package com.shayan.ShayanSchool.model.schema;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UuidGenerator;
+// import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -27,8 +28,8 @@ import lombok.ToString;
 public class ClassRoom {
     
     @Id
-    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    private String id;
+    // @UuidGenerator(style = UuidGenerator.Style.RANDOM)
+    private String id = generateCustomUuid();
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -64,5 +65,9 @@ public class ClassRoom {
     public void removeTeacher(Teacher teacher) {
         teachers.remove(teacher);
         teacher.getClassRooms().remove(this);
+    }
+
+    private String generateCustomUuid(){
+        return "C-" + UUID.randomUUID().toString();
     }
 }

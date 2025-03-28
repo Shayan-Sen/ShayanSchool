@@ -2,9 +2,10 @@ package com.shayan.ShayanSchool.model.schema;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UuidGenerator;
+// import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,8 +24,8 @@ import lombok.ToString;
 public class Student {
 
     @Id
-    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    private String id;
+    // @UuidGenerator(style = UuidGenerator.Style.RANDOM)
+    private String id = generateCustomUuid();
 
     @Column(nullable = false)
     private String name;
@@ -46,6 +47,10 @@ public class Student {
     @CreationTimestamp
     @Column(nullable = false, updatable = false, name = "created_at")
     private LocalDateTime createdAt;
+
+    private String generateCustomUuid(){
+        return "S-" + UUID.randomUUID().toString();
+    }
 
     public Student(String name, Long rollNo, Long registrationNo, BigDecimal cgpa) {
         this.name = name;

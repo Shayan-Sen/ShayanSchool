@@ -1,6 +1,8 @@
 package com.shayan.ShayanSchool.model.schema;
 
-import org.hibernate.annotations.UuidGenerator;
+import java.util.UUID;
+
+// import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,8 +18,8 @@ import lombok.NoArgsConstructor;
 public class Staff {
 
     @Id
-    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    private String id;
+    // @UuidGenerator(style = UuidGenerator.Style.RANDOM)
+    private String id = generateCustomUuid();
 
     @Column(nullable = false)
     private String staffname;
@@ -27,4 +29,8 @@ public class Staff {
 
     @Column(nullable = false)
     private String designation;
+
+    private String generateCustomUuid(){
+        return "A-" + UUID.randomUUID().toString();
+    }
 }
