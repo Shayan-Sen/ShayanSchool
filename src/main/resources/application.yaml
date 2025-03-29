@@ -1,6 +1,4 @@
 # spring.application.name=ShayanTest
-
-
 # # PostgreSQL connection
 # spring.datasource.url=jdbc:postgresql://localhost:5432/practice
 # spring.datasource.username=postgres
@@ -25,3 +23,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    user:
+      name: shayan
+      password: shayan
+
+
+server:
+  port: 9193
