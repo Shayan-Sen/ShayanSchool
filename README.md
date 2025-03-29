@@ -18,7 +18,7 @@ docker run --name postgres-container -e POSTGRES_PASSWORD=shayan -p 5432:5432 -d
 ```
 
 ### 3. Create a Database and Enable the `uuid-ossp` Extension
-Once the container is running, follow these steps to create a database named `practice` and enable the `uuid-ossp` extension:
+Once the container is running, follow these steps to create a database named `shayan` and enable the `uuid-ossp` extension:
 
 1. Access the PostgreSQL container:
    ```bash
@@ -27,7 +27,7 @@ Once the container is running, follow these steps to create a database named `pr
 
 2. Run the following SQL commands to create the database and enable the extension:
    ```sql
-   CREATE DATABASE practice;
+   CREATE DATABASE shayan;
    \c practice
    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
    ```
