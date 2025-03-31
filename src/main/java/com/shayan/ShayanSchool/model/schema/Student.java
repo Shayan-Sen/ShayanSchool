@@ -30,10 +30,10 @@ public class Student {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true, name = "roll_no")
+    @Column(nullable = false, unique = true)
     private Long rollNo;
 
-    @Column(nullable = false, unique = true, name = "registration_no")
+    @Column(nullable = false, unique = true)
     private Long registrationNo;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -45,8 +45,8 @@ public class Student {
     private ClassRoom classRoom;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false, name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime dateOfEnrollment;
 
     private String generateCustomUuid(){
         return "S-" + UUID.randomUUID().toString();

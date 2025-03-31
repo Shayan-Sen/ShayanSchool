@@ -52,7 +52,7 @@ public class ClassRoom {
     private List<Student> students = new ArrayList<>();
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false, name = "created_at")
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public void addTeacher(Teacher teacher) {

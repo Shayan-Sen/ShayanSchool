@@ -39,8 +39,8 @@ public class Teacher {
     private List<ClassRoom> classRooms = new ArrayList<>();
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false, name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime joiningDate;
 
     public void addClassRoom(ClassRoom classRoom) {
         if (!classRooms.contains(classRoom)) {
