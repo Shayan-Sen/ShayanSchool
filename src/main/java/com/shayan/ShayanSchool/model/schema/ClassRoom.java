@@ -34,7 +34,7 @@ public class ClassRoom {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany //(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "classroom_teacher",
         joinColumns = @JoinColumn(name = "classroom_id"),
@@ -43,11 +43,11 @@ public class ClassRoom {
     @ToString.Exclude
     private List<Teacher> teachers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "classRoom", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
     private List<Notice> notices = new ArrayList<>();
 
-    @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "classRoom") //, cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Student> students = new ArrayList<>();
 
@@ -62,9 +62,21 @@ public class ClassRoom {
         }
     }
 
+    public void addStudent(Student student){
+        if(!students.contains(student)){
+            students.add(student);
+            student.setClassRoom(this);
+        }
+    }
+
     public void removeTeacher(Teacher teacher) {
         teachers.remove(teacher);
         teacher.getClassRooms().remove(this);
+    }
+
+    public void removeStudent(Student student){
+        students.remove(student);
+        student.setClassRoom(null);
     }
 
     private String generateCustomUuid(){

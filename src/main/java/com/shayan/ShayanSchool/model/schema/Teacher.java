@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 // import org.hibernate.annotations.UuidGenerator;
 
-import jakarta.persistence.CascadeType;
+// import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -34,7 +34,7 @@ public class Teacher {
     @Column(nullable = false)
     private String teacherpass;
 
-    @ManyToMany(mappedBy = "teachers", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "teachers") //, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @ToString.Exclude
     private List<ClassRoom> classRooms = new ArrayList<>();
 
@@ -42,17 +42,17 @@ public class Teacher {
     @Column(nullable = false, updatable = false)
     private LocalDateTime joiningDate;
 
-    public void addClassRoom(ClassRoom classRoom) {
-        if (!classRooms.contains(classRoom)) {
-            classRooms.add(classRoom);
-            classRoom.getTeachers().add(this);
-        }
-    }
+    // public void addClassRoom(ClassRoom classRoom) {
+    //     if (!classRooms.contains(classRoom)) {
+    //         classRooms.add(classRoom);
+    //         classRoom.getTeachers().add(this);
+    //     }
+    // }
 
-    public void removeClassRoom(ClassRoom classRoom) {
-        classRooms.remove(classRoom);
-        classRoom.getTeachers().remove(this);
-    }
+    // public void removeClassRoom(ClassRoom classRoom) {
+    //     classRooms.remove(classRoom);
+    //     classRoom.getTeachers().remove(this);
+    // }
 
     private String generateCustomUuid(){
         return "T-" + UUID.randomUUID().toString();
