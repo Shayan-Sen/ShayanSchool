@@ -1,12 +1,16 @@
 package com.shayan.ShayanSchool.service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.shayan.ShayanSchool.model.repository.ClassRepository;
+import com.shayan.ShayanSchool.model.repository.NoticeRepository;
 import com.shayan.ShayanSchool.model.repository.StaffRepository;
 import com.shayan.ShayanSchool.model.repository.StudentRepository;
 import com.shayan.ShayanSchool.model.repository.TeacherRepository;
 import com.shayan.ShayanSchool.model.schema.ClassRoom;
+import com.shayan.ShayanSchool.model.schema.Notice;
 import com.shayan.ShayanSchool.model.schema.Staff;
 import com.shayan.ShayanSchool.model.schema.Student;
 import com.shayan.ShayanSchool.model.schema.Teacher;
@@ -20,13 +24,15 @@ public class StaffService {
     private TeacherRepository teacherRepository;
     private ClassRepository classRepository;
     private StaffRepository staffRepository;
+    private NoticeRepository noticeRepository;
 
     StaffService(StudentRepository studentRepository, TeacherRepository teacherRepository,
-            ClassRepository classRepository,StaffRepository staffRepository) {
+            ClassRepository classRepository, StaffRepository staffRepository, NoticeRepository noticeRepository) {
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
         this.classRepository = classRepository;
         this.staffRepository = staffRepository;
+        this.noticeRepository = noticeRepository;
 
     }
 
@@ -37,7 +43,66 @@ public class StaffService {
         try {
             studentRepository.save(student);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to add student");
+            throw new RuntimeException("Unable to add student: " + e.getMessage());
+        }
+    }
+
+    List<Student> getAllStudents() {
+        try {
+            return studentRepository.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get all students: " + e.getMessage());
+        }
+    }
+
+    List<Student> getStudentsByClass(String classname) {
+        try {
+            ClassRoom classRoom = classRepository.findByName(classname);
+            if (classRoom == null) {
+                throw new Exception("ClassRoom not found");
+            }
+            return classRoom.getStudents();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get students by class: " + e.getMessage());
+        }
+    }
+
+    Student getStudentById(String id) {
+        try {
+            return studentRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Student doesn't exist with id " + id));
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get student by id: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    Student updateStudentDetails(Student updatedStudent, String id) {
+        try {
+            Student student = studentRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Student doesn't exist with id " + id));
+            student.setName(updatedStudent.getName());
+            // student.setClassRoom(updatedStudent.getClassRoom());
+            student.setRollNo(updatedStudent.getRollNo());
+            student.setRegistrationNo(updatedStudent.getRegistrationNo());
+            student.setCgpa(updatedStudent.getCgpa());
+
+            return studentRepository.save(student);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to update student by id: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    Student updateStudentCgpa(BigDecimal cgpa, String id) {
+        try {
+            Student student = studentRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Student doesn't exist with id " + id));
+            student.setCgpa(cgpa);
+
+            return studentRepository.save(student);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to update student by id: " + e.getMessage());
         }
     }
 
@@ -58,7 +123,49 @@ public class StaffService {
         try {
             teacherRepository.save(teacher);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to add teacher");
+            throw new RuntimeException("Unable to add teacher: " + e.getMessage());
+        }
+    }
+
+    List<Teacher> getAllTeacher() {
+        try {
+            return teacherRepository.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get all teachers: " + e.getMessage());
+        }
+    }
+
+    List<Teacher> getTeacherByClass(String classname) {
+        try {
+            ClassRoom classRoom = classRepository.findByName(classname);
+            if (classRoom == null) {
+                throw new Exception("ClassRoom not found");
+            }
+            return classRoom.getTeachers();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get teacher by class name: " + e.getMessage());
+        }
+    }
+
+    Teacher getTeacherById(String id) {
+        try {
+            return teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get teacher by id: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    Teacher updateTeacherDetails(Teacher teacher, String id) {
+        try {
+            Teacher existingTeacher = teacherRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Teacher not found"));
+            existingTeacher.setTeachername(teacher.getTeachername());
+            existingTeacher.setTeacherpass(teacher.getTeacherpass());
+            // existingTeacher.setClassRooms(teacher.getClassRooms());
+            return teacherRepository.save(existingTeacher);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to update teacher by id: " + e.getMessage());
         }
     }
 
@@ -68,7 +175,7 @@ public class StaffService {
             Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new Exception("Teacher not found"));
             teacherRepository.delete(teacher);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to delete teacher");
+            throw new RuntimeException("Unable to delete teacher: " + e.getMessage());
         }
     }
 
@@ -98,6 +205,53 @@ public class StaffService {
         } catch (Exception e) {
             throw new RuntimeException("Unable to add student to classRoom: " + e.getMessage());
         }
+    }
+
+    List<String> getListOfClassRooms() {
+        try {
+            return classRepository.findAll().stream().map(classRoom -> classRoom.getName())
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get list of classRooms: " + e.getMessage());
+        }
+    }
+
+    ClassRoom getClassRoomByName(String name) {
+        try {
+            return classRepository.findByName(name);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get classRoom by name: " + e.getMessage());
+        }
+    }
+
+    List<Notice> getNoticesByClassroom(String name) {
+        try {
+            ClassRoom classRoom = classRepository.findByName(name);
+            if (classRoom == null) {
+                throw new Exception("ClassRoom not found");
+            }
+            return classRoom.getNotices();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get notices by classRoom: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    void addNoticeToClassroom(String name, Notice notice) {
+        try {
+            ClassRoom classRoom = classRepository.findByName(name);
+            if (classRoom == null) {
+                throw new Exception("ClassRoom not found");
+                }
+            List<Notice> notices = classRoom.getNotices();
+            notices.add(notice);
+            classRoom.setNotices(notices);
+            classRepository.save(classRoom);
+            noticeRepository.save(notice);
+        }catch(Exception e){
+            throw new RuntimeException("Unable to add notice to classRoom: " + e.getMessage());
+        }
+
     }
 
     @Transactional
@@ -135,7 +289,7 @@ public class StaffService {
     }
 
     @Transactional
-    void removeTeacherToClass(String classname, String teacherid) {
+    void removeTeacherFromClass(String classname, String teacherid) {
         try {
             ClassRoom classRoom = classRepository.findByName(classname);
             if (classRoom == null) {
@@ -178,12 +332,12 @@ public class StaffService {
     // STAFF
 
     @Transactional
-    void addStaff(Staff staff,String adminid) {
+    void addStaff(Staff staff, String adminid) {
         try {
             Staff admin = staffRepository.findById(adminid).orElseThrow(() -> new Exception("Admin not found"));
             if (admin.getDesignation() != "principal") {
                 throw new Exception("Only principal can add staff");
-            }else{
+            } else {
                 staffRepository.save(staff);
             }
         } catch (Exception e) {
@@ -192,12 +346,12 @@ public class StaffService {
     }
 
     @Transactional
-    void deleteStaffById(String id,String adminid) {
+    void deleteStaffById(String id, String adminid) {
         try {
             Staff admin = staffRepository.findById(adminid).orElseThrow(() -> new Exception("Admin not found"));
             if (admin.getDesignation() != "principal") {
                 throw new Exception("Only principal can delete staff");
-            }else{
+            } else {
                 staffRepository.deleteById(id);
             }
         } catch (Exception e) {
