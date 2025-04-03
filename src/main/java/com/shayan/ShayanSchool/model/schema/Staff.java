@@ -21,8 +21,8 @@ public class Staff {
     // @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private String id = generateCustomUuid();
 
-    @Column(nullable = false)
-    private String staffname;
+    @Column(nullable = false,unique = true)
+    private String staffid;
 
     @Column(nullable = false)
     private String staffpass;

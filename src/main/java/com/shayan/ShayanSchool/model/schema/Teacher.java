@@ -28,8 +28,8 @@ public class Teacher {
     // @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private String id = generateCustomUuid();
 
-    @Column(nullable = false)
-    private String teachername;
+    @Column(nullable = false,unique = true)
+    private String teacherid;
 
     @Column(nullable = false)
     private String teacherpass;

@@ -160,7 +160,7 @@ public class StaffService {
         try {
             Teacher existingTeacher = teacherRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Teacher not found"));
-            existingTeacher.setTeachername(teacher.getTeachername());
+            existingTeacher.setTeacherid(teacher.getTeacherid());
             existingTeacher.setTeacherpass(teacher.getTeacherpass());
             // existingTeacher.setClassRooms(teacher.getClassRooms());
             return teacherRepository.save(existingTeacher);
@@ -205,53 +205,6 @@ public class StaffService {
         } catch (Exception e) {
             throw new RuntimeException("Unable to add student to classRoom: " + e.getMessage());
         }
-    }
-
-    List<String> getListOfClassRooms() {
-        try {
-            return classRepository.findAll().stream().map(classRoom -> classRoom.getName())
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to get list of classRooms: " + e.getMessage());
-        }
-    }
-
-    ClassRoom getClassRoomByName(String name) {
-        try {
-            return classRepository.findByName(name);
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to get classRoom by name: " + e.getMessage());
-        }
-    }
-
-    List<Notice> getNoticesByClassroom(String name) {
-        try {
-            ClassRoom classRoom = classRepository.findByName(name);
-            if (classRoom == null) {
-                throw new Exception("ClassRoom not found");
-            }
-            return classRoom.getNotices();
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to get notices by classRoom: " + e.getMessage());
-        }
-    }
-
-    @Transactional
-    void addNoticeToClassroom(String name, Notice notice) {
-        try {
-            ClassRoom classRoom = classRepository.findByName(name);
-            if (classRoom == null) {
-                throw new Exception("ClassRoom not found");
-                }
-            List<Notice> notices = classRoom.getNotices();
-            notices.add(notice);
-            classRoom.setNotices(notices);
-            classRepository.save(classRoom);
-            noticeRepository.save(notice);
-        }catch(Exception e){
-            throw new RuntimeException("Unable to add notice to classRoom: " + e.getMessage());
-        }
-
     }
 
     @Transactional
@@ -302,6 +255,72 @@ public class StaffService {
             teacherRepository.save(teacher);
         } catch (Exception e) {
             throw new RuntimeException("Unable to remove teacher from classRoom: " + e.getMessage());
+        }
+    }
+
+    List<String> getListOfClassRooms() {
+        try {
+            return classRepository.findAll().stream().map(classRoom -> classRoom.getName())
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get list of classRooms: " + e.getMessage());
+        }
+    }
+
+    ClassRoom getClassRoomByName(String name) {
+        try {
+            return classRepository.findByName(name);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get classRoom by name: " + e.getMessage());
+        }
+    }
+
+    List<Notice> getNoticesByClassroom(String name) {
+        try {
+            ClassRoom classRoom = classRepository.findByName(name);
+            if (classRoom == null) {
+                throw new Exception("ClassRoom not found");
+            }
+            return classRoom.getNotices();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get notices by classRoom: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    void addNoticeToClassroom(String name, Notice notice) {
+        try {
+            ClassRoom classRoom = classRepository.findByName(name);
+            if (classRoom == null) {
+                throw new Exception("ClassRoom not found");
+            }
+            List<Notice> notices = classRoom.getNotices();
+            notices.add(notice);
+            classRoom.setNotices(notices);
+            classRepository.save(classRoom);
+            noticeRepository.save(notice);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to add notice to classRoom: " + e.getMessage());
+        }
+
+    }
+
+    @Transactional
+    void deleteNoticeFromClassroom(String name, String noticeId) {
+        try {
+            ClassRoom classRoom = classRepository.findByName(name);
+            Notice notice = noticeRepository.findById(noticeId)
+                    .orElseThrow(() -> new RuntimeException("Notice Not found"));
+            if (classRoom == null) {
+                throw new Exception("ClassRoom not found");
+            }
+            List<Notice> notices = classRoom.getNotices();
+            notices.remove(notice);
+            classRoom.setNotices(notices);
+            classRepository.save(classRoom);
+            noticeRepository.deleteById(noticeId);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to delete notice from classRoom: " + e.getMessage());
         }
     }
 
