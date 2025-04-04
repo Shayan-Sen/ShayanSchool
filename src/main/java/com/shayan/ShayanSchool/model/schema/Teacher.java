@@ -8,9 +8,13 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 // import org.hibernate.annotations.UuidGenerator;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shayan.ShayanSchool.model.serializers.TeacherSerializer;
+
 // import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
@@ -22,6 +26,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@JsonSerialize(using = TeacherSerializer.class)
 public class Teacher {
 
     @Id
@@ -34,7 +39,7 @@ public class Teacher {
     @Column(nullable = false)
     private String teacherpass;
 
-    @ManyToMany(mappedBy = "teachers") // , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "teachers",fetch = FetchType.LAZY) // , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @ToString.Exclude
     private List<ClassRoom> classRooms = new ArrayList<>();
 
@@ -44,5 +49,11 @@ public class Teacher {
 
     private String generateCustomUuid() {
         return "T-" + UUID.randomUUID().toString();
+    }
+
+    @Override
+    public String toString() {
+        return "Teacher [id=" + id + ", teacherid=" + teacherid + ", teacherpass=" + teacherpass + ", joiningDate="
+                + joiningDate + "]";
     }
 }

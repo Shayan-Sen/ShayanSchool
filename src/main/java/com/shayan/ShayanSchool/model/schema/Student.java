@@ -7,8 +7,12 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 // import org.hibernate.annotations.UuidGenerator;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shayan.ShayanSchool.model.serializers.StudentSerializer;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -21,6 +25,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@JsonSerialize(using = StudentSerializer.class)
 public class Student {
 
     @Id
@@ -39,7 +44,7 @@ public class Student {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal cgpa;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classroom_id")
     @ToString.Exclude
     private ClassRoom classRoom;
@@ -48,7 +53,7 @@ public class Student {
     @Column(nullable = false, updatable = false)
     private LocalDateTime dateOfEnrollment;
 
-    private String generateCustomUuid(){
+    private String generateCustomUuid() {
         return "S-" + UUID.randomUUID().toString();
     }
 
@@ -57,5 +62,12 @@ public class Student {
         this.rollNo = rollNo;
         this.registrationNo = registrationNo;
         this.cgpa = cgpa;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", rollNo=" + rollNo + ", registrationNo="
+                + registrationNo + ", cgpa=" + cgpa  + ", classRoom=" + classRoom.getName() + ", dateOfEnrollment="
+                + dateOfEnrollment + '}';
     }
 }

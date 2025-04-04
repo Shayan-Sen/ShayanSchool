@@ -70,10 +70,11 @@ public class TeacherService {
 
     public Teacher viewTeacherDetails(String teacherid) {
         try {
-            if (teacherRepository.findByTeacherid(teacherid) == null) {
+            Teacher teacher = teacherRepository.findByTeacherid(teacherid);
+            if (teacher == null) {
                 throw new RuntimeException("Teacher not found");
             }
-            return teacherRepository.findByTeacherid(teacherid);
+            return teacher;
         } catch (Exception e) {
             throw new RuntimeException("Unable to display teacher details: " + e.getMessage());
         }
@@ -126,7 +127,7 @@ public class TeacherService {
             }
             existingTeacher.setTeacherid(teacher.getTeacherid());
             existingTeacher.setTeacherpass(teacher.getTeacherpass());
-            teacherRepository.save(teacher);
+            teacherRepository.save(existingTeacher);
 
         } catch (Exception e) {
             throw new RuntimeException("Unable to change teacher details: " + e.getMessage());

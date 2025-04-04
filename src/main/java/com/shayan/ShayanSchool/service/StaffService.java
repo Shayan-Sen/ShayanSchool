@@ -1,6 +1,7 @@
 package com.shayan.ShayanSchool.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -201,6 +202,7 @@ public class StaffService {
             Student student = studentRepository.findById(studentid)
                     .orElseThrow(() -> new Exception("Student not found"));
             classRoom.addStudent(student);
+            student.setClassRoom(classRoom);
             classRepository.save(classRoom);
             studentRepository.save(student);
         } catch (Exception e) {
@@ -218,6 +220,7 @@ public class StaffService {
             Student student = studentRepository.findById(studentid)
                     .orElseThrow(() -> new Exception("Student not found"));
             classRoom.removeStudent(student);
+            student.setClassRoom(null);
             classRepository.save(classRoom);
             studentRepository.save(student);
         } catch (Exception e) {
@@ -233,8 +236,11 @@ public class StaffService {
                 throw new Exception("ClassRoom not found");
             }
             Teacher teacher = teacherRepository.findById(teacherid)
-                    .orElseThrow(() -> new Exception("Student not found"));
+                    .orElseThrow(() -> new Exception("Teacher not found"));
             classRoom.addTeacher(teacher);
+            List<ClassRoom> classRooms = teacher.getClassRooms();
+            classRooms.add(classRoom);
+            teacher.setClassRooms(classRooms);
             classRepository.save(classRoom);
             teacherRepository.save(teacher);
         } catch (Exception e) {
@@ -250,8 +256,11 @@ public class StaffService {
                 throw new Exception("ClassRoom not found");
             }
             Teacher teacher = teacherRepository.findById(teacherid)
-                    .orElseThrow(() -> new Exception("Student not found"));
+                    .orElseThrow(() -> new Exception("Teacher not found"));
             classRoom.removeTeacher(teacher);
+            List<ClassRoom> classRooms = teacher.getClassRooms();
+            classRooms.remove(classRoom);
+            teacher.setClassRooms(classRooms);
             classRepository.save(classRoom);
             teacherRepository.save(teacher);
         } catch (Exception e) {
@@ -332,10 +341,13 @@ public class StaffService {
             if (classRoom == null) {
                 throw new Exception("ClassRoom not found");
             }
-            List<Teacher> teachers = classRoom.getTeachers();
-            List<Student> students = classRoom.getStudents();
+            List<Teacher> teachers = new ArrayList<>(classRoom.getTeachers());
+            List<Student> students = new ArrayList<>(classRoom.getStudents());
             for (Teacher teacher1 : teachers) {
                 classRoom.removeTeacher(teacher1);
+                List<ClassRoom> classRooms = teacher1.getClassRooms();
+                classRooms.remove(classRoom);
+                teacher1.setClassRooms(classRooms);
                 teacherRepository.save(teacher1);
             }
             for (Student student1 : students) {
@@ -355,7 +367,7 @@ public class StaffService {
     void addStaff(Staff staff, String adminid) {
         try {
             Staff admin = staffRepository.findByStaffid(adminid);
-            if (admin == null||admin.getDesignation() != "principal") {
+            if (admin == null||!admin.getDesignation().equals("principal")) {
                 throw new Exception("Only principal can add staff");
             } else {
                 staffRepository.save(staff);
@@ -368,7 +380,7 @@ public class StaffService {
     List<Staff> viewAllStaff(String adminid){
         try {
             Staff admin = staffRepository.findByStaffid(adminid);
-            if (admin == null||admin.getDesignation() != "principal") {
+            if (admin == null||!admin.getDesignation().equals("principal")) {
                 throw new Exception("Only principal can view staff");
             }
             return staffRepository.findAll();
@@ -380,7 +392,7 @@ public class StaffService {
     Staff viewStaffById(String id,String adminid){
         try {
             Staff admin = staffRepository.findByStaffid(adminid);
-            if (admin == null||admin.getDesignation() != "principal") {
+            if (admin == null||!admin.getDesignation().equals("principal")) {
                 throw new Exception("Only principal can view staff");
             }
             return staffRepository.findById(id).orElseThrow(()-> new RuntimeException("Staff not found with id " + id));
@@ -404,7 +416,7 @@ public class StaffService {
         try {
             Staff staff = staffRepository.findByStaffid(staffid);
             Staff admin = staffRepository.findByStaffid(adminid);
-            if (admin == null || staff == null || admin.getDesignation() != "principal") {
+            if (admin == null || staff == null || !admin.getDesignation().equals("principal")) {
                 throw new Exception("Staff not found with staffid " + staffid);
             }
             return staff;
@@ -418,7 +430,7 @@ public class StaffService {
         try {
             Staff admin = staffRepository.findByStaffid(adminid);
             Staff existingStaff = staffRepository.findById(id).orElseThrow(()-> new RuntimeException("Staff not found with id " + id));
-            if (admin == null||admin.getDesignation() != "principal") {
+            if (admin == null||!admin.getDesignation().equals("principal")) {
                 throw new Exception("Only principal can view staff");
             }
             existingStaff.setStaffid(staff.getStaffid());
@@ -450,7 +462,7 @@ public class StaffService {
         try {
             Staff existingStaff = staffRepository.findByStaffid(staffid);
             Staff admin = staffRepository.findByStaffid(adminid);
-            if (admin == null || existingStaff == null || admin.getDesignation() != "principal") {
+            if (admin == null || existingStaff == null || !admin.getDesignation().equals("principal")) {
                 throw new Exception("Staff not found with staffid " + staffid);
             }
             existingStaff.setStaffid(staff.getStaffid());
@@ -465,8 +477,8 @@ public class StaffService {
     @Transactional
     void deleteStaffById(String id, String adminid) {
         try {
-            Staff admin = staffRepository.findById(adminid).orElseThrow(() -> new Exception("Admin not found"));
-            if (admin.getDesignation() != "principal") {
+            Staff admin = staffRepository.findByStaffid(adminid);
+            if (admin == null ||!admin.getDesignation().equals("principal")) {
                 throw new Exception("Only principal can delete staff");
             } else {
                 staffRepository.deleteById(id);

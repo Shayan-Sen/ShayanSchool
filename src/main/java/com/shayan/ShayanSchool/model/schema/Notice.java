@@ -1,5 +1,4 @@
 
-
 package com.shayan.ShayanSchool.model.schema;
 
 import java.time.LocalDateTime;
@@ -8,6 +7,9 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 // import org.hibernate.annotations.UuidGenerator;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shayan.ShayanSchool.model.serializers.NoticeSerializer;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,8 +25,9 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonSerialize(using = NoticeSerializer.class)
 public class Notice {
-    
+
     @Id
     // @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private String id = generateCustomUuid();
@@ -40,7 +43,7 @@ public class Notice {
     private ClassRoom classRoom;
 
     @Column(nullable = true)
-    private LocalDateTime expirationTime;
+    private LocalDateTime expirationTime = LocalDateTime.now().plusDays(30);
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -56,7 +59,14 @@ public class Notice {
         this.expirationTime = LocalDateTime.now().plusHours(hours);
     }
 
-    private String generateCustomUuid(){
+    private String generateCustomUuid() {
         return "N-" + UUID.randomUUID().toString();
+    }
+
+    @Override
+    public String toString() {
+        return "Notice{" + "id='" + id + '\'' + ", title='" + title + '\'' + ", content='" + content + '\''
+                + ", classRoom=" + classRoom.getName() + ", expirationTime=" + expirationTime + ", createdAt=" + createdAt
+                + ", updatedAt=" + updatedAt + '}';
     }
 }

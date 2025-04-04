@@ -8,9 +8,13 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 // import org.hibernate.annotations.UuidGenerator;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shayan.ShayanSchool.model.serializers.ClassRoomSerializer;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
@@ -25,6 +29,7 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonSerialize(using = ClassRoomSerializer.class)
 public class ClassRoom {
     
     @Id
@@ -47,7 +52,7 @@ public class ClassRoom {
     @ToString.Exclude
     private List<Notice> notices = new ArrayList<>();
 
-    @OneToMany(mappedBy = "classRoom") //, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "classRoom",fetch = FetchType.LAZY) //, cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Student> students = new ArrayList<>();
 
@@ -81,5 +86,10 @@ public class ClassRoom {
 
     private String generateCustomUuid(){
         return "C-" + UUID.randomUUID().toString();
+    }
+
+    @Override
+    public String toString() {
+        return "ClassRoom{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", createdAt=" + createdAt + '}';
     }
 }
