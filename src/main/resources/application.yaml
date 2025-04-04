@@ -13,7 +13,7 @@ spring:
   application:
     name: ShayanSchool
   datasource:
-    url: postgresql://localhost:5432/school
+    url: jdbc:postgresql://localhost:5432/school
     username: postgres
     password: shayan
   jpa:

@@ -13,7 +13,7 @@ public class StaffInitConfig {
 
     @Bean
     CommandLineRunner initializeStaff(StaffRepository staffRepository) {
-        return args -> {
+        return _ -> {
             if (staffRepository.count() == 0) {
                 Staff defaultAdmin = new Staff();
                 defaultAdmin.setStaffid("admin");

@@ -23,18 +23,18 @@ import lombok.ToString;
 @NoArgsConstructor
 @Entity
 public class Teacher {
-    
+
     @Id
     // @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private String id = generateCustomUuid();
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String teacherid;
 
     @Column(nullable = false)
     private String teacherpass;
 
-    @ManyToMany(mappedBy = "teachers") //, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "teachers") // , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @ToString.Exclude
     private List<ClassRoom> classRooms = new ArrayList<>();
 
@@ -42,19 +42,7 @@ public class Teacher {
     @Column(nullable = false, updatable = false)
     private LocalDateTime joiningDate;
 
-    // public void addClassRoom(ClassRoom classRoom) {
-    //     if (!classRooms.contains(classRoom)) {
-    //         classRooms.add(classRoom);
-    //         classRoom.getTeachers().add(this);
-    //     }
-    // }
-
-    // public void removeClassRoom(ClassRoom classRoom) {
-    //     classRooms.remove(classRoom);
-    //     classRoom.getTeachers().remove(this);
-    // }
-
-    private String generateCustomUuid(){
+    private String generateCustomUuid() {
         return "T-" + UUID.randomUUID().toString();
     }
 }
