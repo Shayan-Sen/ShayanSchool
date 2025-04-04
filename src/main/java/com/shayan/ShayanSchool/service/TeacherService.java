@@ -39,6 +39,9 @@ public class TeacherService {
             if (room == null || teacher == null) {
                 throw new RuntimeException("Classroom or Teacher not found");
             }
+            if (!teacher.getClassRooms().contains(room)) {
+                throw new RuntimeException("Teacher is not assigned to this classroom");
+            }
             List<Notice> notices = room.getNotices();
             notices.add(notice);
             room.setNotices(notices);
@@ -67,6 +70,9 @@ public class TeacherService {
 
     public Teacher viewTeacherDetails(String teacherid) {
         try {
+            if (teacherRepository.findByTeacherid(teacherid) == null) {
+                throw new RuntimeException("Teacher not found");
+            }
             return teacherRepository.findByTeacherid(teacherid);
         } catch (Exception e) {
             throw new RuntimeException("Unable to display teacher details: " + e.getMessage());
@@ -101,7 +107,7 @@ public class TeacherService {
             }
             if (!teacher.getClassRooms().contains(classRoom)) {
                 throw new RuntimeException("Teacher is not allowed in this classroom");
-            }else if(!classRoom.getStudents().contains(student)){
+            } else if (!classRoom.getStudents().contains(student)) {
                 throw new RuntimeException("Student is not in this classroom");
             }
             student.setCgpa(cgpa);
@@ -128,21 +134,21 @@ public class TeacherService {
     }
 
     @Transactional
-    public void deleteNoticeById(String className,String teacherId,String noticeId){
+    public void deleteNoticeById(String className, String teacherId, String noticeId) {
         try {
             ClassRoom room = classRepository.findByName(className);
-            Teacher teacher = teacherRepository.findByTeacherid
-                    (teacherId); 
-            Notice notice = noticeRepository.findById(noticeId).orElseThrow(()-> new RuntimeException("Notice not found with id " + noticeId));
+            Teacher teacher = teacherRepository.findByTeacherid(teacherId);
+            Notice notice = noticeRepository.findById(noticeId)
+                    .orElseThrow(() -> new RuntimeException("Notice not found with id " + noticeId));
             if (room == null || teacher == null) {
                 throw new RuntimeException("Classroom or Teacher not found");
             }
             if (!teacher.getClassRooms().contains(room)) {
                 throw new RuntimeException("Teacher is not allowed in this classroom");
-            }else if(!room.getNotices().contains(notice)){
+            } else if (!room.getNotices().contains(notice)) {
                 throw new RuntimeException("Notice is not in this classroom");
             }
-            List<Notice> notices =room.getNotices();
+            List<Notice> notices = room.getNotices();
             notices.remove(notice);
             room.setNotices(notices);
             classRepository.save(room);

@@ -354,14 +354,111 @@ public class StaffService {
     @Transactional
     void addStaff(Staff staff, String adminid) {
         try {
-            Staff admin = staffRepository.findById(adminid).orElseThrow(() -> new Exception("Admin not found"));
-            if (admin.getDesignation() != "principal") {
+            Staff admin = staffRepository.findByStaffid(adminid);
+            if (admin == null||admin.getDesignation() != "principal") {
                 throw new Exception("Only principal can add staff");
             } else {
                 staffRepository.save(staff);
             }
         } catch (Exception e) {
             throw new RuntimeException("Unable to add staff: " + e.getMessage());
+        }
+    }
+
+    List<Staff> viewAllStaff(String adminid){
+        try {
+            Staff admin = staffRepository.findByStaffid(adminid);
+            if (admin == null||admin.getDesignation() != "principal") {
+                throw new Exception("Only principal can view staff");
+            }
+            return staffRepository.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to view staff: " + e.getMessage());
+        }
+    }
+
+    Staff viewStaffById(String id,String adminid){
+        try {
+            Staff admin = staffRepository.findByStaffid(adminid);
+            if (admin == null||admin.getDesignation() != "principal") {
+                throw new Exception("Only principal can view staff");
+            }
+            return staffRepository.findById(id).orElseThrow(()-> new RuntimeException("Staff not found with id " + id));
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to view staff: " + e.getMessage());
+        }
+    }
+
+    Staff viewStaffbyStaffid(String staffid){
+        try {
+            Staff staff = staffRepository.findByStaffid(staffid);
+            if (staff == null) {
+                throw new Exception("Staff not found with staffid " + staffid);
+            }
+            return staff;
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to view staff: " + e.getMessage());
+        }
+    }
+    Staff viewStaffbyStaffid(String staffid,String adminid){
+        try {
+            Staff staff = staffRepository.findByStaffid(staffid);
+            Staff admin = staffRepository.findByStaffid(adminid);
+            if (admin == null || staff == null || admin.getDesignation() != "principal") {
+                throw new Exception("Staff not found with staffid " + staffid);
+            }
+            return staff;
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to view staff: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    void updateStaffbyId(String id,String adminid,Staff staff){
+        try {
+            Staff admin = staffRepository.findByStaffid(adminid);
+            Staff existingStaff = staffRepository.findById(id).orElseThrow(()-> new RuntimeException("Staff not found with id " + id));
+            if (admin == null||admin.getDesignation() != "principal") {
+                throw new Exception("Only principal can view staff");
+            }
+            existingStaff.setStaffid(staff.getStaffid());
+            existingStaff.setStaffpass(staff.getStaffpass());
+
+            staffRepository.save(existingStaff);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to update staff: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    void updateStaffbyStaffid(String staffid,Staff staff){
+        try {
+            Staff existingStaff = staffRepository.findByStaffid(staffid);
+            if (existingStaff == null) {
+                throw new Exception("Staff not found with staffid " + staffid);
+            }
+            existingStaff.setStaffid(staff.getStaffid());
+            existingStaff.setStaffpass(staff.getStaffpass());
+            staffRepository.save(existingStaff);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to update staff: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    void updateStaffbyStaffid(String staffid,String adminid,Staff staff){
+        try {
+            Staff existingStaff = staffRepository.findByStaffid(staffid);
+            Staff admin = staffRepository.findByStaffid(adminid);
+            if (admin == null || existingStaff == null || admin.getDesignation() != "principal") {
+                throw new Exception("Staff not found with staffid " + staffid);
+            }
+            existingStaff.setStaffid(staff.getStaffid());
+            existingStaff.setStaffpass(staff.getStaffpass());
+
+            staffRepository.save(existingStaff);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to update staff: " + e.getMessage());
         }
     }
 
