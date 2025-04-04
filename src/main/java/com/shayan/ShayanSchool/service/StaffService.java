@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.transaction.annotation.Transactional;
+
+
 import com.shayan.ShayanSchool.model.repository.ClassRepository;
 import com.shayan.ShayanSchool.model.repository.NoticeRepository;
 import com.shayan.ShayanSchool.model.repository.StaffRepository;
@@ -14,8 +17,6 @@ import com.shayan.ShayanSchool.model.schema.Notice;
 import com.shayan.ShayanSchool.model.schema.Staff;
 import com.shayan.ShayanSchool.model.schema.Student;
 import com.shayan.ShayanSchool.model.schema.Teacher;
-
-import jakarta.transaction.Transactional;
 
 public class StaffService {
     // CRUD students & teacher,CRUD staff if designation principal,CRUD notices,CRUD
