@@ -27,7 +27,9 @@ spring:
     user:
       name: shayan
       password: shayan
-
+logging:
+  level:
+    '[org.hibernate.sql]': DEBUG
 
 server:
   port: 9193
