@@ -19,7 +19,7 @@ public class StudentService {
         this.classRepository = classRepository;
     }
 
-    Student viewStudentDetails(Long rollno){
+    Student viewStudentDetails(String rollno){
         try {
             Student student =  studentRepository.findByRollNo(rollno);
             if (student == null) {
@@ -32,7 +32,7 @@ public class StudentService {
     }
 
 
-    List<Student> viewStudents(String className,Long rollno){
+    List<Student> viewStudents(String className,String rollno){
         try {
             Student student = studentRepository.findByRollNo(rollno);
             ClassRoom classRoom = classRepository.findByName(className);
@@ -50,7 +50,7 @@ public class StudentService {
     }
 
 
-    List<Teacher> viewTeachers(String className,Long rollno){
+    List<Teacher> viewTeachers(String className,String rollno){
         try {
             Student student = studentRepository.findByRollNo(rollno);
             ClassRoom classRoom = classRepository.findByName(className);
@@ -67,7 +67,7 @@ public class StudentService {
         }
     }
 
-    List<Notice> viewNotices(String className,Long rollno){
+    List<Notice> viewNotices(String className,String rollno){
         try {
             Student student = studentRepository.findByRollNo(rollno);
             ClassRoom classRoom = classRepository.findByName(className);

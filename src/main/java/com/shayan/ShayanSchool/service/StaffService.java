@@ -41,7 +41,7 @@ public class StaffService {
     // STUDENTS
 
     @Transactional
-    void addStudent(Student student) {
+    public void addStudent(Student student) {
         try {
             studentRepository.save(student);
         } catch (Exception e) {
@@ -49,7 +49,7 @@ public class StaffService {
         }
     }
 
-    List<Student> getAllStudents() {
+    public List<Student> getAllStudents() {
         try {
             return studentRepository.findAll();
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class StaffService {
         }
     }
 
-    List<Student> getStudentsByClass(String classname) {
+    public List<Student> getStudentsByClass(String classname) {
         try {
             ClassRoom classRoom = classRepository.findByName(classname);
             if (classRoom == null) {
@@ -69,7 +69,7 @@ public class StaffService {
         }
     }
 
-    Student getStudentById(String id) {
+    public Student getStudentById(String id) {
         try {
             return studentRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Student doesn't exist with id " + id));
@@ -79,7 +79,7 @@ public class StaffService {
     }
 
     @Transactional
-    Student updateStudentDetails(Student updatedStudent, String id) {
+    public Student updateStudentDetails(Student updatedStudent, String id) {
         try {
             Student student = studentRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Student doesn't exist with id " + id));
@@ -96,7 +96,7 @@ public class StaffService {
     }
 
     @Transactional
-    Student updateStudentCgpa(BigDecimal cgpa, String id) {
+    public Student updateStudentCgpa(BigDecimal cgpa, String id) {
         try {
             Student student = studentRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Student doesn't exist with id " + id));
@@ -109,7 +109,7 @@ public class StaffService {
     }
 
     @Transactional
-    void deleteStudentById(String id) {
+    public void deleteStudentById(String id) {
         try {
             Student student = studentRepository.findById(id).orElseThrow(() -> new Exception("Student not found"));
             studentRepository.delete(student);
@@ -121,7 +121,7 @@ public class StaffService {
     // TEACHERS
 
     @Transactional
-    void addTeacher(Teacher teacher) {
+    public void addTeacher(Teacher teacher) {
         try {
             teacherRepository.save(teacher);
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class StaffService {
         }
     }
 
-    List<Teacher> getAllTeacher() {
+    public List<Teacher> getAllTeacher() {
         try {
             return teacherRepository.findAll();
         } catch (Exception e) {
@@ -137,7 +137,7 @@ public class StaffService {
         }
     }
 
-    List<Teacher> getTeacherByClass(String classname) {
+    public List<Teacher> getTeacherByClass(String classname) {
         try {
             ClassRoom classRoom = classRepository.findByName(classname);
             if (classRoom == null) {
@@ -149,7 +149,7 @@ public class StaffService {
         }
     }
 
-    Teacher getTeacherById(String id) {
+    public Teacher getTeacherById(String id) {
         try {
             return teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher not found"));
         } catch (Exception e) {
@@ -158,7 +158,7 @@ public class StaffService {
     }
 
     @Transactional
-    Teacher updateTeacherDetails(Teacher teacher, String id) {
+    public Teacher updateTeacherDetails(Teacher teacher, String id) {
         try {
             Teacher existingTeacher = teacherRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Teacher not found"));
@@ -172,7 +172,7 @@ public class StaffService {
     }
 
     @Transactional
-    void deleteTeacherById(String id) {
+    public void deleteTeacherById(String id) {
         try {
             Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new Exception("Teacher not found"));
             teacherRepository.delete(teacher);
@@ -184,7 +184,7 @@ public class StaffService {
     // CLASSROOM
 
     @Transactional
-    void addClassRoom(ClassRoom classRoom) {
+    public void addClassRoom(ClassRoom classRoom) {
         try {
             classRepository.save(classRoom);
         } catch (Exception e) {
@@ -193,7 +193,7 @@ public class StaffService {
     }
 
     @Transactional
-    void addStudentToClass(String classname, String studentid) {
+    public void addStudentToClass(String classname, String studentid) {
         try {
             ClassRoom classRoom = classRepository.findByName(classname);
             if (classRoom == null) {
@@ -211,7 +211,7 @@ public class StaffService {
     }
 
     @Transactional
-    void removeStudentFromClass(String classname, String studentid) {
+    public void removeStudentFromClass(String classname, String studentid) {
         try {
             ClassRoom classRoom = classRepository.findByName(classname);
             if (classRoom == null) {
@@ -229,7 +229,7 @@ public class StaffService {
     }
 
     @Transactional
-    void addTeacherToClass(String classname, String teacherid) {
+    public void addTeacherToClass(String classname, String teacherid) {
         try {
             ClassRoom classRoom = classRepository.findByName(classname);
             if (classRoom == null) {
@@ -249,7 +249,7 @@ public class StaffService {
     }
 
     @Transactional
-    void removeTeacherFromClass(String classname, String teacherid) {
+    public void removeTeacherFromClass(String classname, String teacherid) {
         try {
             ClassRoom classRoom = classRepository.findByName(classname);
             if (classRoom == null) {
@@ -268,7 +268,7 @@ public class StaffService {
         }
     }
 
-    List<String> getListOfClassRooms() {
+    public List<String> getListOfClassRooms() {
         try {
             return classRepository.findAll().stream().map(classRoom -> classRoom.getName())
                     .collect(Collectors.toList());
@@ -277,7 +277,7 @@ public class StaffService {
         }
     }
 
-    ClassRoom getClassRoomByName(String name) {
+    public ClassRoom getClassRoomByName(String name) {
         try {
             return classRepository.findByName(name);
         } catch (Exception e) {
@@ -285,7 +285,7 @@ public class StaffService {
         }
     }
 
-    List<Notice> getNoticesByClassroom(String name) {
+    public List<Notice> getNoticesByClassroom(String name) {
         try {
             ClassRoom classRoom = classRepository.findByName(name);
             if (classRoom == null) {
@@ -298,7 +298,7 @@ public class StaffService {
     }
 
     @Transactional
-    void addNoticeToClassroom(String name, Notice notice) {
+    public void addNoticeToClassroom(String name, Notice notice) {
         try {
             ClassRoom classRoom = classRepository.findByName(name);
             if (classRoom == null) {
@@ -316,7 +316,7 @@ public class StaffService {
     }
 
     @Transactional
-    void deleteNoticeFromClassroom(String name, String noticeId) {
+    public void deleteNoticeFromClassroom(String name, String noticeId) {
         try {
             ClassRoom classRoom = classRepository.findByName(name);
             Notice notice = noticeRepository.findById(noticeId)
@@ -335,7 +335,7 @@ public class StaffService {
     }
 
     @Transactional
-    void deleteClassRoomByName(String name) {
+    public void deleteClassRoomByName(String name) {
         try {
             ClassRoom classRoom = classRepository.findByName(name);
             if (classRoom == null) {
@@ -364,7 +364,7 @@ public class StaffService {
     // STAFF
 
     @Transactional
-    void addStaff(Staff staff, String adminid) {
+    public void addStaff(Staff staff, String adminid) {
         try {
             Staff admin = staffRepository.findByStaffid(adminid);
             if (admin == null||!admin.getDesignation().equals("principal")) {
@@ -377,7 +377,7 @@ public class StaffService {
         }
     }
 
-    List<Staff> viewAllStaff(String adminid){
+    public List<Staff> viewAllStaff(String adminid){
         try {
             Staff admin = staffRepository.findByStaffid(adminid);
             if (admin == null||!admin.getDesignation().equals("principal")) {
@@ -389,7 +389,7 @@ public class StaffService {
         }
     }
 
-    Staff viewStaffById(String id,String adminid){
+    public Staff viewStaffById(String id,String adminid){
         try {
             Staff admin = staffRepository.findByStaffid(adminid);
             if (admin == null||!admin.getDesignation().equals("principal")) {
@@ -401,7 +401,7 @@ public class StaffService {
         }
     }
 
-    Staff viewStaffbyStaffid(String staffid){
+    public Staff viewStaffbyStaffid(String staffid){
         try {
             Staff staff = staffRepository.findByStaffid(staffid);
             if (staff == null) {
@@ -412,7 +412,7 @@ public class StaffService {
             throw new RuntimeException("Unable to view staff: " + e.getMessage());
         }
     }
-    Staff viewStaffbyStaffid(String staffid,String adminid){
+    public Staff viewStaffbyStaffid(String staffid,String adminid){
         try {
             Staff staff = staffRepository.findByStaffid(staffid);
             Staff admin = staffRepository.findByStaffid(adminid);
@@ -426,7 +426,7 @@ public class StaffService {
     }
 
     @Transactional
-    void updateStaffbyId(String id,String adminid,Staff staff){
+    public void updateStaffbyId(String id,String adminid,Staff staff){
         try {
             Staff admin = staffRepository.findByStaffid(adminid);
             Staff existingStaff = staffRepository.findById(id).orElseThrow(()-> new RuntimeException("Staff not found with id " + id));
@@ -443,7 +443,7 @@ public class StaffService {
     }
 
     @Transactional
-    void updateStaffbyStaffid(String staffid,Staff staff){
+    public void updateStaffbyStaffid(String staffid,Staff staff){
         try {
             Staff existingStaff = staffRepository.findByStaffid(staffid);
             if (existingStaff == null) {
@@ -458,7 +458,7 @@ public class StaffService {
     }
 
     @Transactional
-    void updateStaffbyStaffid(String staffid,String adminid,Staff staff){
+    public void updateStaffbyStaffid(String staffid,String adminid,Staff staff){
         try {
             Staff existingStaff = staffRepository.findByStaffid(staffid);
             Staff admin = staffRepository.findByStaffid(adminid);
@@ -475,7 +475,7 @@ public class StaffService {
     }
 
     @Transactional
-    void deleteStaffById(String id, String adminid) {
+    public void deleteStaffById(String id, String adminid) {
         try {
             Staff admin = staffRepository.findByStaffid(adminid);
             if (admin == null ||!admin.getDesignation().equals("principal")) {

@@ -7,5 +7,5 @@ import com.shayan.ShayanSchool.model.schema.Student;
 
 
 public interface StudentRepository extends JpaRepository<Student,String>{
-    Student findByRollNo(Long rollNo);
+    Student findByRollNo(String rollno);
 }

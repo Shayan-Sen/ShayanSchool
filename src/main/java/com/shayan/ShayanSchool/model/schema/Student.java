@@ -36,10 +36,10 @@ public class Student {
     private String name;
 
     @Column(nullable = false, unique = true)
-    private Long rollNo;
+    private String rollNo;
 
     @Column(nullable = false, unique = true)
-    private Long registrationNo;
+    private String registrationNo;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal cgpa;
@@ -57,7 +57,7 @@ public class Student {
         return "S-" + UUID.randomUUID().toString();
     }
 
-    public Student(String name, Long rollNo, Long registrationNo, BigDecimal cgpa) {
+    public Student(String name, String rollNo, String registrationNo, BigDecimal cgpa) {
         this.name = name;
         this.rollNo = rollNo;
         this.registrationNo = registrationNo;
