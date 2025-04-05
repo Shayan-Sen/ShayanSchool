@@ -2,6 +2,8 @@ package com.shayan.ShayanSchool.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.shayan.ShayanSchool.model.repository.ClassRepository;
 import com.shayan.ShayanSchool.model.repository.StudentRepository;
 import com.shayan.ShayanSchool.model.schema.ClassRoom;
@@ -9,6 +11,7 @@ import com.shayan.ShayanSchool.model.schema.Notice;
 import com.shayan.ShayanSchool.model.schema.Student;
 import com.shayan.ShayanSchool.model.schema.Teacher;
 
+@Service
 public class StudentService {
     //View all students in classroom, view self details,view notices,view teacher
     private StudentRepository studentRepository;

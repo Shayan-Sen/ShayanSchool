@@ -3,6 +3,7 @@ package com.shayan.ShayanSchool.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shayan.ShayanSchool.model.repository.ClassRepository;
@@ -14,6 +15,7 @@ import com.shayan.ShayanSchool.model.schema.Notice;
 import com.shayan.ShayanSchool.model.schema.Student;
 import com.shayan.ShayanSchool.model.schema.Teacher;
 
+@Service
 public class TeacherService {
     // View all students in classroom, view self details,view notices,change teacher
     // details of self,add and delete notices,change cgpa of student

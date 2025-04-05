@@ -4,10 +4,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import com.shayan.ShayanSchool.model.repository.NoticeRepository;
 import com.shayan.ShayanSchool.model.schema.Notice;
-
+@Service
 public class NoticeService {
 
     private NoticeRepository noticeRepository;
