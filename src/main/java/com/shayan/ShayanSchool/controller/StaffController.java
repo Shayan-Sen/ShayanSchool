@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import static org.springframework.http.HttpStatus.*;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,8 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shayan.ShayanSchool.model.schema.ClassRoom;
+import com.shayan.ShayanSchool.model.schema.Notice;
+import com.shayan.ShayanSchool.model.schema.Staff;
 import com.shayan.ShayanSchool.model.schema.Student;
 import com.shayan.ShayanSchool.model.schema.Teacher;
 import com.shayan.ShayanSchool.service.StaffService;
@@ -90,7 +97,7 @@ public class StaffController {
     }
 
     @PutMapping("/student/cgpa/{id}")
-    public ResponseEntity<ApiResponse> updateStudentCgpa(@PathVariable String id, @RequestBody BigDecimal cgpa) {
+    public ResponseEntity<ApiResponse> updateStudentCgpa(@PathVariable String id, @RequestParam BigDecimal cgpa) {
         try {
             Student student = staffService.updateStudentCgpa(cgpa, id);
             return ResponseEntity.status(ACCEPTED)
@@ -110,7 +117,7 @@ public class StaffController {
         }
     }
 
-    // --------------------------------TEACHER-------------------------------------
+// --------------------------------------TEACHER-------------------------------------
 
     @PostMapping("/teacher/add")
     public ResponseEntity<ApiResponse> addTeacher(@RequestBody Teacher teacher) {
@@ -173,5 +180,220 @@ public class StaffController {
         }
     }
 
+
+//  ------------------------------------CLASSROOM--------------------------------------
+
+    @PostMapping("/classroom/add")
+    public ResponseEntity<ApiResponse> addClassroom(@RequestBody ClassRoom classroom) {
+        try {
+            staffService.addClassRoom(classroom);
+            return ResponseEntity.status(OK).body(new ApiResponse("Classroom added successfully", classroom));
+        } catch (Exception e) {
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/classroom/{classname}/add-student/{id}")
+    public ResponseEntity<ApiResponse> addStudentToClassroom(@PathVariable String classname, @PathVariable String id){
+        try {
+            staffService.addStudentToClass(classname, id);
+            return ResponseEntity.status(OK).body(new ApiResponse("Student with id: "+id+" added to class: "+classname, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/classroom/{classname}/delete-student/{id}")
+    public ResponseEntity<ApiResponse> deleteStudentToClassroom(@PathVariable String classname, @PathVariable String id){
+        try {
+            staffService.removeStudentFromClass(classname, id);
+            return ResponseEntity.status(OK).body(new ApiResponse("Student with id: "+id+" removed from class: "+classname, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/classroom/{classname}/add-teacher/{id}")
+    public ResponseEntity<ApiResponse> addTeacherToClassroom(@PathVariable String classname, @PathVariable String id){
+        try {
+            staffService.addTeacherToClass(classname, id);
+            return ResponseEntity.status(OK).body(new ApiResponse("Teacher with id: "+id+" added to class: "+classname, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/classroom/{classname}/delete-teacher/{id}")
+    public ResponseEntity<ApiResponse> deleteTeacherToClassroom(@PathVariable String classname, @PathVariable String id){
+        try {
+            staffService.removeTeacherFromClass(classname, id);
+            return ResponseEntity.status(OK).body(new ApiResponse("Teacher with id: "+id+" removed from class: "+classname, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/classrooms/all")
+    public ResponseEntity<ApiResponse> getAllClassrooms(){
+        try {
+            List<String> classrooms = staffService.getListOfClassRooms();
+            return ResponseEntity.status(OK).body(new ApiResponse("All classrooms: ", classrooms));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/classroom/{classname}")
+    public ResponseEntity<ApiResponse> getClassroomByName(@PathVariable String classname){
+        try {
+            ClassRoom classRoom = staffService.getClassRoomByName(classname);
+            return ResponseEntity.status(OK).body(new ApiResponse("Classroom: "+classname, classRoom));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/classroom/{classname}/notices")
+    public ResponseEntity<ApiResponse> getNoticesByClassroomName(@PathVariable String classname){
+        try {
+            List<Notice> notices = staffService.getNoticesByClassroom(classname);
+            return ResponseEntity.status(OK).body(new ApiResponse("Notices in Classroom: "+classname, notices));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/classroom/{classname}/notice/add")
+    public ResponseEntity<ApiResponse> addNoticeToClassroom(@PathVariable String classname, @RequestBody Notice notice){
+        try {
+            staffService.addNoticeToClassroom(classname, notice);
+            return ResponseEntity.status(OK).body(new ApiResponse("Notice added to classroom: "+classname, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/classroom/{classname}/notice/{id}")
+    public ResponseEntity<ApiResponse> removeNoticeFromClassroom(@PathVariable String classname, @PathVariable String id){
+        try {
+            staffService.deleteNoticeFromClassroom(classname, id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/classroom/{classname}")
+    public ResponseEntity<ApiResponse> deleteClassroom(@PathVariable String classname){
+        try {
+            staffService.deleteClassRoomByName(classname);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+
+//  ------------------------------------------STAFF-----------------------------------------------------
+
+    @PostMapping("/principal/staff/add")
+    public ResponseEntity<ApiResponse> addStaff(@RequestBody Staff staff){
+        try {
+            Authentication authObject = SecurityContextHolder.getContext().getAuthentication();
+            String adminid = authObject.getName();
+            staffService.addStaff(staff,adminid);
+            return ResponseEntity.status(OK).body(new ApiResponse("Staff added", staff));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/principal/staff/all")
+    public ResponseEntity<ApiResponse> getAllStaff(){
+        try {
+            String adminid = SecurityContextHolder.getContext().getAuthentication().getName();
+            List<Staff> staffs = staffService.viewAllStaff(adminid);
+            return ResponseEntity.status(OK).body(new ApiResponse("All staff", staffs));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/principal/staff/id/{id}")
+    public ResponseEntity<ApiResponse> getStaffById(@PathVariable String id){
+        try {
+            String adminid = SecurityContextHolder.getContext().getAuthentication().getName();
+            Staff staff = staffService.viewStaffById(id, adminid);
+            return ResponseEntity.status(OK).body(new ApiResponse("Staff", staff));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/self")
+    public ResponseEntity<ApiResponse> getSelf(){
+        try {
+            String selfid = SecurityContextHolder.getContext().getAuthentication().getName();
+            Staff staff = staffService.viewStaffbyStaffid(selfid);
+            return ResponseEntity.status(OK).body(new ApiResponse("Self", staff));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/principal/staff/staffid/{staffid}")
+    public ResponseEntity<ApiResponse> getStaffByStaffId(@PathVariable String staffid){
+        try {
+            String adminid = SecurityContextHolder.getContext().getAuthentication().getName();
+            Staff staff = staffService.viewStaffbyStaffid(staffid,adminid);
+            return ResponseEntity.status(OK).body(new ApiResponse("Self", staff));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/principal/staff/id/{id}")
+    public ResponseEntity<ApiResponse> updateStaff(@PathVariable String id, @RequestBody Staff staff){
+        try {
+            String adminid = SecurityContextHolder.getContext().getAuthentication().getName();
+            staffService.updateStaffbyId(id,adminid,staff);
+            return ResponseEntity.status(OK).body(new ApiResponse("Staff updated", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/update-self")
+    public ResponseEntity<ApiResponse> updateSelf(@RequestBody Staff staff){
+        try {
+            String selfid = SecurityContextHolder.getContext().getAuthentication().getName();
+            staffService.updateStaffbyStaffid(selfid,staff);
+            return ResponseEntity.status(OK).body(new ApiResponse("Self updated", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/principal/staff/update/staffid/{staffid}")
+    public ResponseEntity<ApiResponse> updateStaffByStaffId(@PathVariable String staffid, @RequestBody Staff staff){
+        try {
+            String adminid = SecurityContextHolder.getContext().getAuthentication().getName();
+            staffService.updateStaffbyStaffid(staffid,adminid,staff);
+            return ResponseEntity.status(OK).body(new ApiResponse("Staff updated", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/principal/staff/delete/id/{id}")
+    public ResponseEntity<ApiResponse> deleteStaff(@PathVariable String id){
+        try {
+            String adminid = SecurityContextHolder.getContext().getAuthentication().getName();
+            staffService.deleteStaffById(id,adminid);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 
 }
