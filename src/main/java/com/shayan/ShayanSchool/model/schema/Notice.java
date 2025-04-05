@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-// import org.hibernate.annotations.UuidGenerator;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.shayan.ShayanSchool.model.serializers.NoticeSerializer;
@@ -29,7 +28,6 @@ import lombok.ToString;
 public class Notice {
 
     @Id
-    // @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private String id = generateCustomUuid();
 
     @Column(nullable = false)

@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
-// import org.hibernate.annotations.UuidGenerator;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.shayan.ShayanSchool.model.serializers.TeacherSerializer;
 
-// import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,7 +28,6 @@ import lombok.ToString;
 public class Teacher {
 
     @Id
-    // @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private String id = generateCustomUuid();
 
     @Column(nullable = false, unique = true)
@@ -39,7 +36,7 @@ public class Teacher {
     @Column(nullable = false)
     private String teacherpass;
 
-    @ManyToMany(mappedBy = "teachers",fetch = FetchType.LAZY) // , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "teachers",fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<ClassRoom> classRooms = new ArrayList<>();
 
