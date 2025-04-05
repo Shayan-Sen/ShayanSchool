@@ -33,3 +33,5 @@ logging:
 
 server:
   port: 9193
+  servlet:
+    context-path: /school
