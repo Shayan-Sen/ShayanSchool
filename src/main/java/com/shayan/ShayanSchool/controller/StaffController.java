@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shayan.ShayanSchool.model.schema.Student;
+import com.shayan.ShayanSchool.model.schema.Teacher;
 import com.shayan.ShayanSchool.service.StaffService;
 
 @RestController
@@ -33,19 +34,19 @@ public class StaffController {
         return "Staff Service is up and running";
     }
 
-// ----------------------------------STUDENT---------------------------------
+    // ----------------------------------STUDENT---------------------------------
 
-    @PostMapping("/add-students")
+    @PostMapping("/student/add")
     public ResponseEntity<ApiResponse> addStudents(@RequestBody Student student) {
         try {
             staffService.addStudent(student);
             return ResponseEntity.status(CREATED).body(new ApiResponse("Succesfully added student", student));
         } catch (Exception e) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse("Failed to add student", e.getMessage()));
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
-    @GetMapping("/view-all-students")
+    @GetMapping("/students/all")
     public ResponseEntity<ApiResponse> viewAllStudents() {
         try {
             List<Student> students = staffService.getAllStudents();
@@ -53,11 +54,11 @@ public class StaffController {
                     .body(new ApiResponse("Succesfully retrieved all students in school", students));
         } catch (Exception e) {
             return ResponseEntity.status(NOT_FOUND)
-                    .body(new ApiResponse(null, e.getMessage()));
+                    .body(new ApiResponse(e.getMessage(), null));
         }
     }
 
-    @GetMapping("/class/{classname}/all-students")
+    @GetMapping("/students/class/{classname}")
     public ResponseEntity<ApiResponse> viewAllStudentsByClass(@PathVariable String classname) {
         try {
             List<Student> students = staffService.getStudentsByClass(classname);
@@ -84,7 +85,7 @@ public class StaffController {
             return ResponseEntity.status(ACCEPTED)
                     .body(new ApiResponse("Succesfully updated student with id: " + id, student));
         } catch (Exception e) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse("Failed to update student", e.getMessage()));
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -95,7 +96,7 @@ public class StaffController {
             return ResponseEntity.status(ACCEPTED)
                     .body(new ApiResponse("Succesfully updated student cgpa with id: " + id, student));
         } catch (Exception e) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse("Failed to update student", e.getMessage()));
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -109,6 +110,68 @@ public class StaffController {
         }
     }
 
+    // --------------------------------TEACHER-------------------------------------
 
-//  --------------------------------TEACHER-------------------------------------
+    @PostMapping("/teacher/add")
+    public ResponseEntity<ApiResponse> addTeacher(@RequestBody Teacher teacher) {
+        try {
+            staffService.addTeacher(teacher);
+            return ResponseEntity.status(CREATED).body(new ApiResponse("Teacher added successfully", teacher));
+        } catch (Exception e) {
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/teachers/all")
+    public ResponseEntity<ApiResponse> getAllTeachers() {
+        try {
+            List<Teacher> teachers = staffService.getAllTeacher();
+            return ResponseEntity.ok().body(new ApiResponse("Successfully retrieved all teachers", teachers));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/teachers/class/{classname}")
+    public ResponseEntity<ApiResponse> getTeacherByClass(@PathVariable String classname) {
+        try {
+            List<Teacher> teachers = staffService.getTeacherByClass(classname);
+            return ResponseEntity.status(OK)
+                    .body(new ApiResponse("Successfully retrieved teachers for class: " + classname, teachers));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/teacher/{id}")
+    public ResponseEntity<ApiResponse> getTeacherById(@PathVariable String id) {
+        try {
+            Teacher teacher = staffService.getTeacherById(id);
+            return ResponseEntity.ok().body(new ApiResponse("Successfully retrieved teacher with id: " + id, teacher));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/teacher/{id}")
+    public ResponseEntity<ApiResponse> updateTeacher(@PathVariable String id, @RequestBody Teacher teacher) {
+        try {
+            Teacher updatedTeacher = staffService.updateTeacherDetails(teacher,id);
+            return ResponseEntity.status(OK).body(new ApiResponse("Teacher updated successfully", updatedTeacher));
+        } catch (Exception e) {
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/teacher/{id}")
+    public ResponseEntity<ApiResponse> deleteTeacher(@PathVariable String id) {
+        try {
+            staffService.deleteTeacherById(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+
 }
