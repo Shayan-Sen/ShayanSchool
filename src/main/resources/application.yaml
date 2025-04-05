@@ -23,10 +23,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  security:
-    user:
-      name: shayan
-      password: shayan
 logging:
   level:
     '[org.hibernate.sql]': DEBUG
@@ -35,3 +31,15 @@ server:
   port: 9193
   servlet:
     context-path: /school
+# Keep in mind the context path is the path that will be used to access the application
+# For example, if you set the context path to /school, you will access the application at
+# http://localhost:9193/school
+# If you don't set the context path, the application will be accessible at
+# http://localhost:9193
+# If you want to use a different port, you can change the port number in the server.port
+# property. For example, to use port 8080, you would set the following property:
+# server.port=8080
+# If you want to use a different context path, you can change the context path in the
+# server.servlet.context-path property. For example, to use the context path /school,
+# you would set the following property:
+# server.servlet.context-path=/school
