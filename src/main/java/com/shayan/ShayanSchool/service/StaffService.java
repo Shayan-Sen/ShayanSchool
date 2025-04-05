@@ -30,7 +30,7 @@ public class StaffService {
     private StaffRepository staffRepository;
     private NoticeRepository noticeRepository;
 
-    StaffService(StudentRepository studentRepository, TeacherRepository teacherRepository,
+    public StaffService(StudentRepository studentRepository, TeacherRepository teacherRepository,
             ClassRepository classRepository, StaffRepository staffRepository, NoticeRepository noticeRepository) {
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;

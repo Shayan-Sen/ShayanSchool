@@ -11,6 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse{
-    private Object data;
     private String message;
+    private Object data;
 }

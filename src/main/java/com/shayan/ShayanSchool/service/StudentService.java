@@ -17,12 +17,12 @@ public class StudentService {
     private StudentRepository studentRepository;
     private ClassRepository classRepository;
 
-    StudentService(StudentRepository studentRepository,ClassRepository classRepository){
+    public StudentService(StudentRepository studentRepository,ClassRepository classRepository){
         this.studentRepository = studentRepository;
         this.classRepository = classRepository;
     }
 
-    Student viewStudentDetails(String rollno){
+    public Student viewStudentDetails(String rollno){
         try {
             Student student =  studentRepository.findByRollNo(rollno);
             if (student == null) {
@@ -35,7 +35,7 @@ public class StudentService {
     }
 
 
-    List<Student> viewStudents(String className,String rollno){
+    public List<Student> viewStudents(String className,String rollno){
         try {
             Student student = studentRepository.findByRollNo(rollno);
             ClassRoom classRoom = classRepository.findByName(className);
@@ -53,7 +53,7 @@ public class StudentService {
     }
 
 
-    List<Teacher> viewTeachers(String className,String rollno){
+    public List<Teacher> viewTeachers(String className,String rollno){
         try {
             Student student = studentRepository.findByRollNo(rollno);
             ClassRoom classRoom = classRepository.findByName(className);
@@ -70,7 +70,7 @@ public class StudentService {
         }
     }
 
-    List<Notice> viewNotices(String className,String rollno){
+    public List<Notice> viewNotices(String className,String rollno){
         try {
             Student student = studentRepository.findByRollNo(rollno);
             ClassRoom classRoom = classRepository.findByName(className);

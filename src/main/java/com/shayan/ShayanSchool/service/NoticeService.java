@@ -13,7 +13,7 @@ public class NoticeService {
 
     private NoticeRepository noticeRepository;
 
-    NoticeService(NoticeRepository repository){
+    public NoticeService(NoticeRepository repository){
         this.noticeRepository = repository;
     }
 

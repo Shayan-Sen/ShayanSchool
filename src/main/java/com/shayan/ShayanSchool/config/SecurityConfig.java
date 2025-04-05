@@ -1,6 +1,5 @@
 package com.shayan.ShayanSchool.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -26,21 +25,26 @@ import com.shayan.ShayanSchool.model.schema.Teacher;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
     private StaffRepository staffRepository;
-    @Autowired
     private TeacherRepository teacherRepository;
-    @Autowired
     private StudentRepository studentRepository;
+
+    SecurityConfig(StaffRepository staffRepository, TeacherRepository teacherRepository,
+            StudentRepository studentRepository) {
+        this.staffRepository = staffRepository;
+        this.teacherRepository = teacherRepository;
+        this.studentRepository = studentRepository;
+    }
 
     @Bean
     @Order(1)
     public SecurityFilterChain staffFilterChain(HttpSecurity http) throws Exception {
         return http
+                .securityMatcher("/staff/**")
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers("/staff/principal/**").hasRole("PRINCIPAL")
-                                .requestMatchers("/staff/**").hasRole("STAFF"))
+                                .anyRequest().hasRole("STAFF"))
                 .authenticationProvider(staffAuthProvider())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -50,27 +54,28 @@ public class SecurityConfig {
     @Bean
     @Order(2)
     public SecurityFilterChain teacherFilterChain(HttpSecurity http) throws Exception {
-        return http.
-            authorizeHttpRequests(
-                auth -> auth
-                .requestMatchers("/teacher/**").hasRole("TEACHER")
-            ).authenticationProvider(teacherAuthenticationProvider())
-            .httpBasic(Customizer.withDefaults())
-            .csrf(AbstractHttpConfigurer::disable)
-            .build();
+        return http.securityMatcher("/teacher/**")
+                .authorizeHttpRequests(
+                        auth -> auth
+                                .anyRequest().hasRole("TEACHER"))
+                .authenticationProvider(teacherAuthenticationProvider())
+                .httpBasic(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .build();
     }
 
     @Bean
     @Order(3)
     public SecurityFilterChain studentFilterChain(HttpSecurity http) throws Exception {
         return http
-            .authorizeHttpRequests(
-                auth -> auth
-                .requestMatchers("/student/**").hasRole("STUDENT")
-            ).authenticationProvider(studentAuthenticationProvider())
-            .httpBasic(Customizer.withDefaults())
-            .csrf(AbstractHttpConfigurer::disable)
-            .build();
+                .securityMatcher("/student/**")
+                .authorizeHttpRequests(
+                        auth -> auth
+                                .anyRequest().hasRole("STUDENT"))
+                .authenticationProvider(studentAuthenticationProvider())
+                .httpBasic(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .build();
     }
 
     @Bean
@@ -81,14 +86,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider teacherAuthenticationProvider(){
+    public AuthenticationProvider teacherAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(teacherDetailsService());
         return provider;
     }
 
     @Bean
-    public AuthenticationProvider studentAuthenticationProvider(){
+    public AuthenticationProvider studentAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(studentDetailsService());
         return provider;
@@ -100,10 +105,11 @@ public class SecurityConfig {
             Staff staff = staffRepository.findByStaffid(username);
             if (staff != null) {
                 if (staff.getDesignation().equals("principal")) {
-                    return User.builder().username(staff.getStaffid()).password("{noop}"+staff.getStaffpass())
+                    return User.builder().username(staff.getStaffid()).password("{noop}" + staff.getStaffpass())
                             .roles("PRINCIPAL", "STAFF").build();
                 } else {
-                    return User.builder().username(staff.getStaffid()).password("{noop}"+staff.getStaffpass()).roles("STAFF")
+                    return User.builder().username(staff.getStaffid()).password("{noop}" + staff.getStaffpass())
+                            .roles("STAFF")
                             .build();
                 }
             }
@@ -116,7 +122,7 @@ public class SecurityConfig {
         return username -> {
             Teacher teacher = teacherRepository.findByTeacherid(username);
             if (teacher != null) {
-                return User.builder().username(teacher.getTeacherid()).password("{noop}"+teacher.getTeacherpass())
+                return User.builder().username(teacher.getTeacherid()).password("{noop}" + teacher.getTeacherpass())
                         .roles("TEACHER").build();
             }
             throw new UsernameNotFoundException("User not found");
@@ -128,7 +134,8 @@ public class SecurityConfig {
         return username -> {
             Student student = studentRepository.findByRollNo(username);
             if (student != null) {
-                return User.builder().username(student.getRollNo()).password("{noop}"+student.getRegistrationNo()).roles("STUDENT").build();
+                return User.builder().username(student.getRollNo()).password("{noop}" + student.getRegistrationNo())
+                        .roles("STUDENT").build();
             }
             throw new UsernameNotFoundException("User not found");
         };

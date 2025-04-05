@@ -25,7 +25,7 @@ public class TeacherService {
     private StudentRepository studentRepository;
     private NoticeRepository noticeRepository;
 
-    TeacherService(ClassRepository classRepository, TeacherRepository teacherRepository,
+    public TeacherService(ClassRepository classRepository, TeacherRepository teacherRepository,
             StudentRepository studentRepository, NoticeRepository noticeRepository) {
         this.classRepository = classRepository;
         this.teacherRepository = teacherRepository;
