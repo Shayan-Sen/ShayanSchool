@@ -20,6 +20,9 @@ import com.shayan.ShayanSchool.model.schema.Staff;
 import com.shayan.ShayanSchool.model.schema.Student;
 import com.shayan.ShayanSchool.model.schema.Teacher;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 @Service
 public class StaffService {
     // CRUD students & teacher,CRUD staff if designation principal,CRUD notices,CRUD
@@ -29,6 +32,9 @@ public class StaffService {
     private ClassRepository classRepository;
     private StaffRepository staffRepository;
     private NoticeRepository noticeRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public StaffService(StudentRepository studentRepository, TeacherRepository teacherRepository,
             ClassRepository classRepository, StaffRepository staffRepository, NoticeRepository noticeRepository) {
@@ -45,7 +51,9 @@ public class StaffService {
     @Transactional
     public void addStudent(Student student) {
         try {
-            studentRepository.save(student);
+            Student saved = studentRepository.save(student);
+            entityManager.flush();
+            entityManager.refresh(saved);
         } catch (Exception e) {
             throw new RuntimeException("Unable to add student: " + e.getMessage());
         }
